@@ -1,5 +1,8 @@
 package _05_Synchronized_Swimming;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /*
  * Synchronization is a mechanism which ensures that two concurrent processes (threads)
  * do not simultaneously execute some particular program segment. When one thread wants
@@ -15,7 +18,8 @@ package _05_Synchronized_Swimming;
  */
 public class SynchronizedSwimming {
 	private static final Object swimmingPool = new Object();
-
+	private static final Lock mutex = new ReentrantLock(true);
+	
 	public static void main(String[] args) {
 		Swimmer a = new Swimmer("John");
 		Swimmer b = new Swimmer("Sally");
@@ -34,10 +38,14 @@ public class SynchronizedSwimming {
 	}
 
 	public static void takeTurn(Swimmer swimmer) {
+		mutex.lock();
 		try {
 			swimLap(swimmer);
 			Thread.sleep(100);
 		} catch (InterruptedException ignore) {
+		}
+		finally {
+			mutex.unlock();
 		}
 	}
 }
